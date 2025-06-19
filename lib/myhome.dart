@@ -49,7 +49,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 subtitle: Text(
-                  'Googlieee',
+                  'Google',
                   style: TextStyle(
                     fontSize: screenSize.width * 0.04,
                     color: Colors.grey.shade600,
@@ -91,7 +91,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 subtitle: Text(
-                  'Persist Venture',
+                  'Amazon',
                   style: TextStyle(
                     fontSize: screenSize.width * 0.04,
                     color: Colors.grey.shade600,
