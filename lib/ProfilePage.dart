@@ -9,7 +9,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   // Text controllers to handle the updated values
-  final TextEditingController _nameController = TextEditingController(text: 'KP DON');
+  final TextEditingController _nameController = TextEditingController(text: 'Khushi Pandit');
   final TextEditingController _placeController = TextEditingController(text: 'Raichur, India');
   final TextEditingController _professionController = TextEditingController(text: 'Software Development');
   final TextEditingController _degreeController = TextEditingController(text: 'B.Tech in Computer Science');
