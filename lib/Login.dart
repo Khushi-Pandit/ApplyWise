@@ -351,27 +351,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                             Center(
                                               child: Column(
                                                 children: [
-                                                  Container(
-                                                    padding: const EdgeInsets.symmetric(
-                                                      horizontal: 20,
-                                                      vertical: 5,
-                                                    ),
-                                                    decoration: BoxDecoration(
-                                                      gradient: const LinearGradient(
-                                                        colors: [Color(0xFF1E3A8A), Color(0xFF3B82F6)],
-                                                      ),
-                                                      borderRadius: BorderRadius.circular(20),
-                                                    ),
-                                                    child: Text(
-                                                      "Welcome Back",
-                                                      style: TextStyle(
-                                                        fontSize: isTablet ? 18 : 16,
-                                                        fontWeight: FontWeight.w600,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: height * 0.02),
                                                   Text(
                                                     "Sign In to Your Future",
                                                     style: TextStyle(
@@ -477,7 +456,13 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                                 ],
                                               ),
                                               child: ElevatedButton(
-                                                onPressed: _isLoading ? null : loginUser,
+                                                // onPressed: _isLoading ? null : loginUser,
+                                                onPressed: () {
+                                                  Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(builder: (context) => Homepage()),
+                                                  );
+                                                },
                                                 style: ElevatedButton.styleFrom(
                                                   backgroundColor: Colors.transparent,
                                                   foregroundColor: Colors.white,
