@@ -85,7 +85,6 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isTablet = size.width > 600;
-    final double height = size.height;
 
     return Scaffold(
       body: Container(
@@ -126,11 +125,10 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
                 },
               );
             }),
-
             SafeArea(
               child: Center(
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(horizontal: isTablet ? 30 : 30),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
                       // App Logo
@@ -197,25 +195,38 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
                               _buildTextField("Email Address", Icons.email_outlined, emailController,
                                   keyboardType: TextInputType.emailAddress),
                               const SizedBox(height: 16),
-
-                              _buildPasswordField("Password", passwordController),
-                              const SizedBox(height: 16),
-
-                              _buildPasswordField("Confirm Password", confirmController),
-                              const SizedBox(height: 16),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: TextButton(
+                              _buildTextField(
+                                "Password",
+                                Icons.lock_outline,
+                                passwordController,
+                                obscure: _obscurePassword,
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                    color: const Color(0xFF1E3A8A),
+                                  ),
                                   onPressed: () {
                                     setState(() => _obscurePassword = !_obscurePassword);
                                   },
-                                  child: Text(
-                                    _obscurePassword ? "Show Password" : "Hide Password",
-                                    style: const TextStyle(color: Color(0xFF1E3A8A)),
-                                  ),
                                 ),
                               ),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 16),
+                              _buildTextField(
+                                "Confirm Password",
+                                Icons.lock_outline,
+                                confirmController,
+                                obscure: _obscurePassword,
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                    color: const Color(0xFF1E3A8A),
+                                  ),
+                                  onPressed: () {
+                                    setState(() => _obscurePassword = !_obscurePassword);
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 35),
                               _buildGradientButton(
                                 text: "Create Account",
                                 icon: Icons.login_rounded,
@@ -282,8 +293,14 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildTextField(String hint, IconData icon, TextEditingController controller,
-      {bool obscure = false, TextInputType keyboardType = TextInputType.text}) {
+  Widget _buildTextField(
+      String hint,
+      IconData icon,
+      TextEditingController controller, {
+        bool obscure = false,
+        TextInputType keyboardType = TextInputType.text,
+        Widget? suffixIcon,
+      }) {
     return TextFormField(
       controller: controller,
       obscureText: obscure,
@@ -292,6 +309,7 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
       decoration: InputDecoration(
         hintText: hint,
         prefixIcon: Icon(icon, color: const Color(0xFF1E3A8A)),
+        suffixIcon: suffixIcon,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -322,29 +340,6 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
-      ),
-    );
-  }
-
-  Widget _buildPasswordField(String label, TextEditingController controller) {
-    return TextField(
-      controller: controller,
-      obscureText: _obscurePassword,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF1E3A8A),),
-        suffixIcon: IconButton(
-          icon: Icon(
-            _obscurePassword ? Icons.visibility_off : Icons.visibility,
-            color: Color(0xFF1E3A8A),
-          ),
-          onPressed: () {
-            setState(() {
-              _obscurePassword = !_obscurePassword;
-            });
-          },
-        ),
-        border: const OutlineInputBorder(),
       ),
     );
   }

@@ -13,18 +13,15 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final confirmController = TextEditingController();
   bool _obscurePassword = true;
   bool _isLoading = false;
+
   final FocusNode emailFocus = FocusNode();
   final FocusNode passwordFocus = FocusNode();
 
   late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _slideAnimation;
   late Animation<double> _floatAnimation;
 
   @override
@@ -33,14 +30,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
-    );
-
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
-
-    _slideAnimation = Tween<double>(begin: 40, end: 0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
     );
 
     _floatAnimation = Tween<double>(begin: -10, end: 10).animate(
@@ -53,10 +42,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   @override
   void dispose() {
     _controller.dispose();
-    nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
-    confirmController.dispose();
     super.dispose();
   }
 
@@ -93,12 +80,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       _showSnackBar("An error occurred. Please try again.", isError: true);
     } finally {
       setState(() => _isLoading = false);
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const Homepage(),
-          )
-      );
     }
   }
 
@@ -116,9 +97,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             Expanded(child: Text(message)),
           ],
         ),
-        backgroundColor: isError
-            ? const Color(0xFFE74C3C)
-            : const Color(0xFF27AE60),
+        backgroundColor: isError ? const Color(0xFFE74C3C) : const Color(0xFF27AE60),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         margin: const EdgeInsets.all(16),
@@ -196,7 +175,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             SafeArea(
               child: Center(
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(horizontal: isTablet ? 30 : 30),
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
                       // App Logo
@@ -235,7 +214,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 30),
 
                       // Form
@@ -258,45 +236,20 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           child: Column(
                             children: [
                               /// Email Input
-                              _buildTextFormField(
+                              _buildTextField(
+                                label: "Email Address",
+                                icon: Icons.email_outlined,
                                 controller: emailController,
-                                focusNode: emailFocus,
-                                hintText: "Enter your email address",
-                                prefixIcon: Icons.email_outlined,
                                 keyboardType: TextInputType.emailAddress,
                                 validator: _validateEmail,
                                 isTablet: isTablet,
-                                height: height,
                               ),
-                              SizedBox(height: height * 0.025),
+                              const SizedBox(height: 16),
 
-                              /// Password Input with Toggle Eye
-                              _buildTextFormField(
-                                controller: passwordController,
-                                focusNode: passwordFocus,
-                                hintText: "Enter your password",
-                                prefixIcon: Icons.lock_outline,
-                                obscureText: _obscurePassword,
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _obscurePassword = !_obscurePassword;
-                                    });
-                                  },
-                                  icon: Icon(
-                                    _obscurePassword
-                                        ? Icons.visibility_off_outlined
-                                        : Icons.visibility_outlined,
-                                    color: const Color(0xFF1E3A8A),
-                                    size: isTablet ? 24 : 20,
-                                  ),
-                                ),
-                                validator: _validatePassword,
-                                isTablet: isTablet,
-                                height: height,
-                              ),
+                              /// Password Input
+                              _buildPasswordField(isTablet),
+                              const SizedBox(height: 8),
 
-                              /// Forgot Password Button
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: TextButton(
@@ -313,17 +266,15 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: height * 0.02),
+                              const SizedBox(height: 16),
 
-                              const SizedBox(height: 20),
                               _buildGradientButton(
-                                text: "Create Account",
+                                text: "Login",
                                 icon: Icons.login_rounded,
                                 onPressed: _isLoading ? null : loginUser,
                               ),
                               const SizedBox(height: 20),
 
-                              // Enhanced Signup Link
                               Center(
                                 child: Container(
                                   padding: const EdgeInsets.all(16),
@@ -382,6 +333,60 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     );
   }
 
+  Widget _buildTextField({
+    required String label,
+    required IconData icon,
+    required TextEditingController controller,
+    TextInputType keyboardType = TextInputType.text,
+    String? Function(String?)? validator,
+    required bool isTablet,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      validator: validator,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: const Color(0xFF1E3A8A)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF1E3A8A), width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      ),
+    );
+  }
+
+  Widget _buildPasswordField(bool isTablet) {
+    return TextFormField(
+      controller: passwordController,
+      obscureText: _obscurePassword,
+      validator: _validatePassword,
+      decoration: InputDecoration(
+        labelText: "Password",
+        prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF1E3A8A)),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscurePassword ? Icons.visibility_off : Icons.visibility,
+            color: const Color(0xFF1E3A8A),
+          ),
+          onPressed: () {
+            setState(() {
+              _obscurePassword = !_obscurePassword;
+            });
+          },
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF1E3A8A), width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      ),
+    );
+  }
+
   Widget _buildGradientButton({required String text, required IconData icon, VoidCallback? onPressed}) {
     return Container(
       width: double.infinity,
@@ -401,67 +406,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           shadowColor: Colors.transparent,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInputLabel(String label, IconData icon) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          color: const Color(0xFF1E3A8A),
-          size: 20,
-        ),
-        const SizedBox(width: 8),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF1E3A8A),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTextFormField({
-    required TextEditingController controller,
-    required FocusNode focusNode,
-    required String hintText,
-    required IconData prefixIcon,
-    TextInputType keyboardType = TextInputType.text,
-    String? Function(String?)? validator,
-    bool obscureText = false,
-    Widget? suffixIcon,
-    required bool isTablet,
-    required double height,
-  }) {
-    return TextFormField(
-      controller: controller,
-      focusNode: focusNode,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      validator: validator,
-      style: TextStyle(fontSize: isTablet ? 16 : 14),
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(
-          vertical: isTablet ? height * 0.02 : height * 0.018,
-          horizontal: 16,
-        ),
-        hintText: hintText,
-        hintStyle: TextStyle(fontSize: isTablet ? 14 : 12),
-        prefixIcon: Icon(prefixIcon, size: isTablet ? 24 : 20),
-        suffixIcon: suffixIcon,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
         ),
       ),
     );
