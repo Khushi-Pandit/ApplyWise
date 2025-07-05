@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:caproj/Login.dart';
+import 'package:caproj/LoginSignUp/Login.dart';
 import 'dart:math' as math;
 
 class Splashscreen extends StatefulWidget {
@@ -484,7 +484,7 @@ class CareerPathPainter extends CustomPainter {
 
     // Draw ascending steps/ladder representing career growth
     final stepWidth = size.width * 0.15;
-    final stepHeight = 20.0;
+    const stepHeight = 20.0;
     final startX = size.width * 0.1;
     final startY = size.height * 0.8;
 
