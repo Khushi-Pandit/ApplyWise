@@ -22,7 +22,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
   final List<Widget> _pages = [
     const HomeScreen(),
     const AppliedInternshipsScreen(),
-    const ProfileScreen(),
+    ProfileScreen(),
   ];
 
   final List<IconData> _icons = [
