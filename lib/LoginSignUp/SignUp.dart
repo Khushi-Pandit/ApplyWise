@@ -1,5 +1,8 @@
+import 'package:caproj/Homepage.dart';
 import 'package:caproj/LoginSignUp/Login.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -55,20 +58,41 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) return;
-
-    if (passwordController.text != confirmController.text) {
-      _showSnackBar("Passwords do not match", isError: true);
-      return;
-    }
 
     setState(() => _isLoading = true);
 
-    Future.delayed(const Duration(seconds: 2), () {
-      _showSnackBar("Sign up successful!");
+    const String apiUrl = "http://192.168.11.1:3000/api/v1/users/login";
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "email": emailController.text.trim(),
+          "password": passwordController.text.trim(),
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        if (responseData["success"] == true) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const Homepage()),
+          );
+        } else {
+          _showSnackBar(responseData["message"], isError: true);
+        }
+      } else {
+        _showSnackBar("Login failed. Please try again.", isError: true);
+      }
+    } catch (error) {
+      _showSnackBar("An error occurred. Please try again.", isError: true);
+    } finally {
       setState(() => _isLoading = false);
-    });
+    }
   }
 
   void _showSnackBar(String message, {bool isError = false}) {

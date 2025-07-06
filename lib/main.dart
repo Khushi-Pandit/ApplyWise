@@ -1,11 +1,12 @@
+import 'package:caproj/ProfilePage.dart';
 import 'package:caproj/SplashScreen/splashscreen.dart';
 import 'package:flutter/material.dart';
 
 void main(){
   return runApp(
-    const MaterialApp(
+    MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Splashscreen(),
+      home: ProfileScreen(),
     )
   );
 }
